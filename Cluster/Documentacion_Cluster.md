@@ -44,12 +44,13 @@ lxc launch ubuntu:16.04 [nombre_de_la_máquina_a_crear]
 ```
 
 Para la creación de nuestro cluster se decidió realizar:
+
 **Nodo manager (administración de cluster)**
 
 - IP del nodo manager.
   
 ```sh
-lxc launch ubuntu:16.04 MySQL_Master
+lxc launch ubuntu:16.04 MySQL-Master
 ```
 
 **Nodos de datos (almacenamiento)**
@@ -57,14 +58,14 @@ lxc launch ubuntu:16.04 MySQL_Master
 - IP del nodo de datos 1.
 
 ```sh
-lxc launch ubuntu:16.04 MySQL_Data1
+lxc launch ubuntu:16.04 MySQL-Data1
 ```
 
  - IP del nodo de datos 2.
 
 
 ```sh
-lxc launch ubuntu:16.04 MySQL_Data2
+lxc launch ubuntu:16.04 MySQL-Data2
 ```
     
 **Nodos cliente de SQL (clientes del servidor para consultas)**
@@ -72,13 +73,13 @@ lxc launch ubuntu:16.04 MySQL_Data2
 - IP del nodo cliente 1.
 
 ```sh
-lxc launch ubuntu:16.04 MySQL_Client1
+lxc launch ubuntu:16.04 MySQL-Client1
 ```
 
 - IP del nodo cliente 2.
 
 ```sh
-lxc launch ubuntu:16.04 MySQL_Client2
+lxc launch ubuntu:16.04 MySQL-Client2
 ```
 
 Cada una de estas máquinas se encuentra alojada en un contenedor de LXD, esto ayuda a aminorar el uso de hardware y poder mantener la infraestructura de forma portable y privada en su propia red.
