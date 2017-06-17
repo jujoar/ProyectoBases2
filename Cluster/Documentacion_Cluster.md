@@ -10,28 +10,32 @@ Para el desarrollo de la infraestructura de cluster se decidió utilizar LXD, de
 - Máquinas lxd Ubuntu16.04
 - Versión de mysql-cluster 7.4.12
 
-##Procedimiento
+## Procedimiento
 
 Primero que todo, debemos tener las máquinas virtuales para empezar la instalación de MySQL Cluster, por lo tanto, este tutorial se divide en dos partes, **Máquinas Virtuales**, donde explicamos cómo instalar LXD y **Cluster de MySQL**, donde explicamos cómo instalar MySQL Cluster sobre las máquinas virtuales recién creadas.
 
-###Máquinas Virtuales:
+### Máquinas Virtuales:
 
 ##### 1) Instalación de LXD en la máquina física:
+
 ```sh
 sudo apt-get install lxd
 ```
 
 ##### 2) Creación de un nuevo grupo de máquinas virtuales:
+
 ```sh
 newgrp lxd
 ```
 
 ##### 3) Inicializar LXD:
+
 ```sh
 sudo lxd init
 ```
 
 ##### 4) Creación de las máquinas virtuales:
+
 En este punto debemos crear las máquinas que deseamos. 
 Usamos el siguiente comando para crear cada máquina:
 
@@ -79,7 +83,8 @@ lxc launch ubuntu:16.04 MySQL_Client2
 
 Cada una de estas máquinas se encuentra alojada en un contenedor de LXD, esto ayuda a aminorar el uso de hardware y poder mantener la infraestructura de forma portable y privada en su propia red.
 
-###Cluster de MySQL:
+### Cluster de MySQL:
+
 En esta sección explicaremos la serie de pasos que se debe llevar a cabo en cada máquina virtual para crear el cluster de MySQL.
 
 Para acceder a la terminal de cualquiera de estas máquinas usaremos el siguiente comando:
@@ -88,6 +93,7 @@ Para acceder a la terminal de cualquiera de estas máquinas usaremos el siguient
 lxc exec [nombre_de_la_máquina] -- /bin/bash
 ```
 #### Pasos para el nodo Master:
+
 Una vez que hemos accedido a la terminal del nodo master, ejecutaremos los siguientes pasos.
 
 **1)  Descarga y descompresión de mysql cluster.**
@@ -134,25 +140,30 @@ IndexMemory=18M
 [ndb_mgmd default]
 [tcp default]
 
-# Cluster Control / Management node
+#Cluster Control / Management node
+
 [ndb_mgmd]
 hostname= (IP MySQL_Master)
 
-# Data Node 1
+#Data Node 1
+
 [ndbd]
 hostname= (IP MySQL_Data1)
 DataDir= /var/lib/mysql-cluster
 
-# Data Node 2
+#Data Node 2
+
 [ndbd]
 HostName= (IP MySQL_Data2)
 DataDir=/var/lib/mysql-cluster
 
-# SQL Client Node1
+#SQL Client Node1
+
 [mysqld]
 hostname= (IP MySQL_Client1)
 
-# SQL Client Node2
+#SQL Client Node2
+
 [mysqld]
 hostname= (IP MySQL_Client2)
 [mysqld]
@@ -182,6 +193,7 @@ show;
 
 
 #### Pasos para cada uno de los nodos de datos:
+
 Ejecutaremos cada uno de los siguientes comantos en cada uno de los nodos de datos, por lo que debemos abrir cada terminal de los nodos de datos.
 
 **1) Instalar librerias y creación de grupos y usuarios.**
@@ -251,22 +263,22 @@ Copiar lo siguiente en el archivo ***my.conf***.
 Nota: Debe cambiar las direcciones IP por las de sus máquinas.
 
 ```
-# MySQL Config
+#MySQL Config
 [mysqld]
 datadir=/usr/local/mysql/data
 socket=/tmp/mysql.sock
 user=mysql
 
-# Run ndb storage engine
+#Run ndb storage engine
 ndbcluster
-# IP address management node
+#IP address management node
 ndb-connectstring= (IP MySQL_Master)
 
 [mysql_cluster]
-# IP address management node
+#IP address management node
 ndb-connectstring= (IP MySQL_Master)
 
-# MySQL Pid and Log
+#MySQL Pid and Log
 [mysqld_safe]
 log-error=/var/log/mysqld.log
 pid-file=/var/run/mysqld/mysqld.pid
@@ -303,6 +315,7 @@ mysql -u root -p
 ```
 
 #### Pasos para cada uno de los nodos clientes:
+
 Ejecutaremos cada uno de los siguientes comantos en cada uno de los nodos clientes, por lo que debemos abrir cada terminal de los nodos clientes.
 
 **1) Instalar librerias y creación de usuarios.**
@@ -370,22 +383,22 @@ Copiar lo siguiente en el archivo ***my.conf***.
 Nota: Debe cambiar las direcciones IP por las de sus máquinas.
 
 ```
-# MySQL Config
+#MySQL Config
 [mysqld]
 datadir=/usr/local/mysql/data
 socket=/tmp/mysql.sock
 user=mysql
 
-# Run ndb storage engine
+#Run ndb storage engine
 ndbcluster
-# IP address management node
+#IP address management node
 ndb-connectstring= (IP MySQL_Master)
 
 [mysql_cluster]
-# IP address management node
+#IP address management node
 ndb-connectstring= (IP MySQL_Master)
 
-# MySQL Pid and Log
+#MySQL Pid and Log
 [mysqld_safe]
 log-error=/var/log/mysqld.log
 pid-file=/var/run/mysqld/mysqld.pid
@@ -411,7 +424,7 @@ create database nanana;
 
 Una vez realizado este tutorial, hemos terminado la instalación y creación del cluster de MySQL.
 
-####Tips
+#### Tips
 
 Ahora debemos acceder a la terminal del nodo master y correr los siguientes comandos.
 
@@ -448,9 +461,11 @@ systemctl start mysql
 ```
 
 #### Comentarios finales: 
+
 - La creación de este cluster se debe gracias a un tutorial que realizó un estudiante de ingeniería en computación del I.T.C.R. Este tutorial/documentación es una extensión y actualización del que el estudiante realizó.
 
 #### Bibliografía.
+
 - Howtoforgecom. (2016). Howtoforgecom. Retrieved16 November, 2016, from https://www.howtoforge.com/tutorial/how-to-install-a-mysql-cluster-on-ubuntu-16-04/
 - Linuxcontainersorg. (2016). Linuxcontainersorg. Retrieved 16 November, 2016, from https://linuxcontainers.org/lxd/getting-started-cli/
 - Cybercitibiz. (2016). Cybercitibiz. Retrieved 24 November, 2016, from https://www.cyberciti.biz/tips/linux-iptables-18-allow-mysql-server-incoming-request.html
