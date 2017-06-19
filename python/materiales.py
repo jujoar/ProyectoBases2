@@ -37,5 +37,3 @@ if __name__ == '__main__':
 	read_file("materiales.csv")
 	crearLista()
 
-
-	#random.choice( ['red', 'black', 'green'] ).

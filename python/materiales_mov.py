@@ -16,8 +16,14 @@ def proveedores():
 def cantidad():
 	return random.randint(20,200)
 
+def cantidad2():
+	return random.randint(2,50)
+
 def cantidad_lineas():
 	return random.randint(1,15)
+
+def cantidad_salidas():
+	return random.randint(1,10)
 
 def id_material():
 	return random.randint(1,6204)
@@ -32,24 +38,40 @@ def entradas():
 	global listaInicial
 	f = open('mov_bodega.sql', 'w+')
 	devolucion = 0
+	salida = 0
 	contador = 0
 	aterior = ""
 	cont2 = 0
-	for i in range(0,80000,16):
+	last_orden = 0
+	for i in range(0,80000,8):
 		sql = ""
-		if (devolucion < 395):
+		if (salida > 2):
+			sql1 = "INSERT INTO `bodega`.`salida_de_bodega` (`idsalida`,`fecha`,`encargado`) " \
+			"VALUES(%d, \"%s\", \"%s\");\n" % (contador, listaInicial[i], empleado_bodega())
+			sql2 = ""
+			for ii in range(0, cantidad_salidas()):
+				sql2 = sql2 + "INSERT INTO `bodega`.`detalle_salida`(`iddetalle_salida`,`idsalida`,`cantidad`,`idmateriales`) " \
+				"VALUES (%d, %d, %d, %d);\n" % (ii, contador, cantidad2(), id_material())
+			sql3 = "UPDATE `produccion`.`productos` SET cantidad = cantidad + %d WHERE " \
+			"idproductos = %d;\n" % (random.randint(1,5), random.randint(0,100))
+			sql = sql1 + sql2 + sql3
+			contador = contador + 1
+			salida = 0
+		elif (devolucion < 27):
 			sql1 = "INSERT INTO `bodega`.`ordenes_de_compra`(`idordenes`,`idproveedores`,`fecha`,`encargado`)" \
 			" VALUES (%d, %d, \"%s\", %d);\n" % (contador, proveedores(), listaInicial[i], empleado_bodega())
 			sql2 = ""
 			for ii in range(0, cantidad_lineas()):
 				sql2 = sql2 + "INSERT INTO `bodega`.`detalle_orden` (`idordenes`, `cantidad`, `idmateriales` ,`iddetalle`)" \
 				" VALUES (%d, %d, %d, %d);\n" % (contador, cantidad(), id_material(),ii)
-			sql = sql1 + sql2
+			sql = sql1 + sql2 
 			devolucion = devolucion + 1
 			contador = contador + 1
-		else:
+			salida = salida +1
+			last_orden = contador-1
+		elif (devolucion >= 27):
 			sql = "INSERT INTO `bodega`.`devoluciones` (`idordenes`,`motivo`) " \
-			"VALUES (%d, \"%s\");\n" % (contador-1, motivo_devolucion())
+			"VALUES (%d, \"%s\");\n" % (last_orden, motivo_devolucion())
 			devolucion = 0
 		f.write(sql)
 		cont2 = cont2 + 1
