@@ -64,13 +64,14 @@ CREATE TABLE IF NOT EXISTS `bodega`.`empleado` (
   `cargo` VARCHAR(45) NOT NULL,
   `iddepartamento` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idempleado`),
-  INDEX `fk_empleado_1_idx` (`iddepartamento` ASC),
   CONSTRAINT `fk_empleado_1`
     FOREIGN KEY (`iddepartamento`)
     REFERENCES `bodega`.`departamento` (`iddepartamento`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_empleado_1_idx` ON `bodega`.`empleado` (`iddepartamento` ASC);
 
 
 -- -----------------------------------------------------
@@ -84,8 +85,6 @@ CREATE TABLE IF NOT EXISTS `bodega`.`ordenes_de_compra` (
   `fecha` TIMESTAMP NOT NULL,
   `encargado` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idordenes`),
-  INDEX `fk_ordenes_de_compra_1_idx` (`idproveedores` ASC),
-  INDEX `fk_ordenes_de_compra_2_idx` (`encargado` ASC),
   CONSTRAINT `fk_ordenes_de_compra_1`
     FOREIGN KEY (`idproveedores`)
     REFERENCES `bodega`.`proveedores` (`idproveedores`)
@@ -97,6 +96,10 @@ CREATE TABLE IF NOT EXISTS `bodega`.`ordenes_de_compra` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_ordenes_de_compra_1_idx` ON `bodega`.`ordenes_de_compra` (`idproveedores` ASC);
+
+CREATE INDEX `fk_ordenes_de_compra_2_idx` ON `bodega`.`ordenes_de_compra` (`encargado` ASC);
 
 
 -- -----------------------------------------------------
@@ -110,8 +113,6 @@ CREATE TABLE IF NOT EXISTS `bodega`.`detalle_orden` (
   `cantidad` INT UNSIGNED NOT NULL,
   `idmateriales` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`iddetalle`, `idordenes`),
-  INDEX `fk_detalle_orden_1_idx` (`idordenes` ASC),
-  INDEX `fk_detalle_orden_2_idx` (`idmateriales` ASC),
   CONSTRAINT `fk_detalle_orden_1`
     FOREIGN KEY (`idordenes`)
     REFERENCES `bodega`.`ordenes_de_compra` (`idordenes`)
@@ -124,6 +125,10 @@ CREATE TABLE IF NOT EXISTS `bodega`.`detalle_orden` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_detalle_orden_1_idx` ON `bodega`.`detalle_orden` (`idordenes` ASC);
+
+CREATE INDEX `fk_detalle_orden_2_idx` ON `bodega`.`detalle_orden` (`idmateriales` ASC);
+
 
 -- -----------------------------------------------------
 -- Table `bodega`.`salida_de_bodega`
@@ -131,17 +136,18 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `bodega`.`salida_de_bodega` ;
 
 CREATE TABLE IF NOT EXISTS `bodega`.`salida_de_bodega` (
-  `idsalida` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idsalida` INT UNSIGNED NOT NULL,
   `fecha` TIMESTAMP NOT NULL,
   `encargado` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idsalida`),
-  INDEX `fk_salida_de_bodega_1_idx` (`encargado` ASC),
   CONSTRAINT `fk_salida_de_bodega_1`
     FOREIGN KEY (`encargado`)
     REFERENCES `bodega`.`empleado` (`idempleado`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_salida_de_bodega_1_idx` ON `bodega`.`salida_de_bodega` (`encargado` ASC);
 
 
 -- -----------------------------------------------------
@@ -150,13 +156,11 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `bodega`.`detalle_salida` ;
 
 CREATE TABLE IF NOT EXISTS `bodega`.`detalle_salida` (
-  `iddetalle_salida` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `iddetalle_salida` INT UNSIGNED NOT NULL,
   `idsalida` INT UNSIGNED NOT NULL,
   `cantidad` INT UNSIGNED NOT NULL,
   `idmateriales` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`iddetalle_salida`, `idsalida`),
-  INDEX `fk_detalle_salida_1_idx` (`idmateriales` ASC),
-  INDEX `fk_detalle_salida_2_idx` (`idsalida` ASC),
   CONSTRAINT `fk_detalle_salida_1`
     FOREIGN KEY (`idmateriales`)
     REFERENCES `bodega`.`materiales` (`idmateriales`)
@@ -169,6 +173,10 @@ CREATE TABLE IF NOT EXISTS `bodega`.`detalle_salida` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_detalle_salida_1_idx` ON `bodega`.`detalle_salida` (`idmateriales` ASC);
+
+CREATE INDEX `fk_detalle_salida_2_idx` ON `bodega`.`detalle_salida` (`idsalida` ASC);
+
 
 -- -----------------------------------------------------
 -- Table `bodega`.`devoluciones`
@@ -180,7 +188,6 @@ CREATE TABLE IF NOT EXISTS `bodega`.`devoluciones` (
   `idordenes` INT UNSIGNED NOT NULL,
   `motivo` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`iddevoluciones`),
-  INDEX `fk_devoluciones_1_idx` (`idordenes` ASC),
   CONSTRAINT `fk_devoluciones_1`
     FOREIGN KEY (`idordenes`)
     REFERENCES `bodega`.`ordenes_de_compra` (`idordenes`)
@@ -188,31 +195,7 @@ CREATE TABLE IF NOT EXISTS `bodega`.`devoluciones` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `bodega`.`pagos_proveedores`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `bodega`.`pagos_proveedores` ;
-
-CREATE TABLE IF NOT EXISTS `bodega`.`pagos_proveedores` (
-  `idpagos` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idordenes` INT UNSIGNED NOT NULL,
-  `fecha` TIMESTAMP NOT NULL,
-  `idempleado` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`idpagos`),
-  INDEX `fk_pagos_proveedores_1_idx` (`idordenes` ASC),
-  INDEX `fk_pagos_proveedores_2_idx` (`idempleado` ASC),
-  CONSTRAINT `fk_pagos_proveedores_1`
-    FOREIGN KEY (`idordenes`)
-    REFERENCES `bodega`.`ordenes_de_compra` (`idordenes`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_pagos_proveedores_2`
-    FOREIGN KEY (`idempleado`)
-    REFERENCES `bodega`.`empleado` (`idempleado`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE INDEX `fk_devoluciones_1_idx` ON `bodega`.`devoluciones` (`idordenes` ASC);
 
 USE `produccion` ;
 
@@ -260,13 +243,14 @@ CREATE TABLE IF NOT EXISTS `produccion`.`precios` (
   `precio` INT UNSIGNED NOT NULL,
   `fecha` TIMESTAMP NOT NULL,
   PRIMARY KEY (`idprecios`, `idproductos`),
-  INDEX `fk_precios_1_idx` (`idproductos` ASC),
   CONSTRAINT `fk_precios_1`
     FOREIGN KEY (`idproductos`)
     REFERENCES `produccion`.`productos` (`idproductos`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_precios_1_idx` ON `produccion`.`precios` (`idproductos` ASC);
 
 
 -- -----------------------------------------------------
@@ -279,13 +263,14 @@ CREATE TABLE IF NOT EXISTS `produccion`.`ventas` (
   `idclientes` INT UNSIGNED NOT NULL,
   `fecha` TIMESTAMP NOT NULL,
   PRIMARY KEY (`idventas`),
-  INDEX `fk_ventas_1_idx` (`idclientes` ASC),
   CONSTRAINT `fk_ventas_1`
     FOREIGN KEY (`idclientes`)
     REFERENCES `produccion`.`clientes` (`idclientes`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_ventas_1_idx` ON `produccion`.`ventas` (`idclientes` ASC);
 
 
 -- -----------------------------------------------------
@@ -299,7 +284,6 @@ CREATE TABLE IF NOT EXISTS `produccion`.`detalle_ventas` (
   `cantidad` INT UNSIGNED NOT NULL,
   `idproductos` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`iddetalle_ventas`, `idventas`),
-  INDEX `fk_detalle_ventas_1_idx` (`idventas` ASC),
   CONSTRAINT `fk_detalle_ventas_1`
     FOREIGN KEY (`idventas`)
     REFERENCES `produccion`.`ventas` (`idventas`)
@@ -311,6 +295,8 @@ CREATE TABLE IF NOT EXISTS `produccion`.`detalle_ventas` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_detalle_ventas_1_idx` ON `produccion`.`detalle_ventas` (`idventas` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -327,21 +313,36 @@ CREATE TRIGGER `entrada_material`
 AFTER INSERT ON `detalle_orden` FOR EACH ROW
 BEGIN
 	UPDATE materiales
-	SET materiales.cantidad = materiales.cantidad + (SELECT cantidad FROM detalle_orden ORDER BY iddetalle, idordenes DESC LIMIT 1)
-	WHERE materiales.idmateriales = (SELECT idmateriales FROM detalle_orden ORDER BY iddetalle, idordenes DESC LIMIT 1);
+	SET materiales.cantidad = materiales.cantidad + (SELECT cantidad FROM detalle_orden ORDER BY idordenes DESC, iddetalle DESC LIMIT 1)
+	WHERE materiales.idmateriales = (SELECT idmateriales FROM detalle_orden ORDER BY idordenes DESC, iddetalle DESC LIMIT 1);
 END
 $$
 
 
 USE `bodega`$$
-DROP TRIGGER IF EXISTS `bodega`.`salida_material` $$
+DROP TRIGGER IF EXISTS `bodega`.`check` $$
 USE `bodega`$$
-CREATE TRIGGER `salida_material` 
-AFTER INSERT ON `detalle_salida` FOR EACH ROW
+CREATE TRIGGER `check` BEFORE INSERT ON `detalle_salida` 
+FOR EACH ROW
+BEGIN 
+	SET @ACTUAL = (SELECT cantidad FROM materiales WHERE NEW.idmateriales = materiales.idmateriales);
+	IF @ACTUAL < NEW.cantidad 
+	THEN
+		SET NEW.cantidad = @ACTUAL;
+	END IF;
+END
+
+	$$
+
+
+USE `bodega`$$
+DROP TRIGGER IF EXISTS `bodega`.`salida_bodega` $$
+USE `bodega`$$
+CREATE TRIGGER `salida_bodega` AFTER INSERT ON `detalle_salida` FOR EACH ROW
 BEGIN
 	UPDATE materiales
-	SET materiales.cantidad = materiales.cantidad - detalle_salida.cantidad
-	WHERE detalle_salida.iddetalle_salida = NEW.iddetalle_salida;
+	SET materiales.cantidad = materiales.cantidad - (SELECT cantidad FROM detalle_salida ORDER BY idsalida DESC, iddetalle_salida DESC LIMIT 1)
+	WHERE materiales.idmateriales = (SELECT idmateriales FROM detalle_salida ORDER BY idsalida DESC, iddetalle_salida DESC LIMIT 1);
 END
 $$
 
