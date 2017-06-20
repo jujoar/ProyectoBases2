@@ -463,10 +463,13 @@ systemctl start mysql
 
 #### Comentarios finales: 
 
-- La creación de este cluster se debe gracias a un tutorial que realizó un estudiante de ingeniería en computación del I.T.C.R. Este tutorial/documentación es una extensión y actualización del que el estudiante realizó.
+- La creación de este cluster se debe gracias a un tutorial que realizó el estudiante Randall Araya Campos de ingeniería en computación del I.T.C.R. Este tutorial/documentación es una extensión y actualización del que el estudiante realizó.
+
+- El estado final del cluster es completo, lo único que hace falta es crear las bases de datos dentro del cluster y empezar a usarlo.
 
 #### Bibliografía.
 
+- Randall Araya. (2016). cluster-de-mysql-en-lxd. 15 Junio 2017, de tec.siua.ac.cr Sitio web: https://tec.siua.ac.cr/documentacion/cluster-de-mysql-en-lxd
 - Howtoforgecom. (2016). Howtoforgecom. Retrieved16 November, 2016, from https://www.howtoforge.com/tutorial/how-to-install-a-mysql-cluster-on-ubuntu-16-04/
 - Linuxcontainersorg. (2016). Linuxcontainersorg. Retrieved 16 November, 2016, from https://linuxcontainers.org/lxd/getting-started-cli/
 - Cybercitibiz. (2016). Cybercitibiz. Retrieved 24 November, 2016, from https://www.cyberciti.biz/tips/linux-iptables-18-allow-mysql-server-incoming-request.html
