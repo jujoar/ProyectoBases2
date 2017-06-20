@@ -6,6 +6,8 @@ DROP SCHEMA IF EXISTS `bodega` ;
 CREATE SCHEMA IF NOT EXISTS `bodega` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 DROP SCHEMA IF EXISTS `produccion` ;
 CREATE SCHEMA IF NOT EXISTS `produccion` ;
+DROP SCHEMA IF EXISTS `iot` ;
+CREATE SCHEMA IF NOT EXISTS `iot` ;
 USE `bodega` ;
 
 -- -----------------------------------------------------
@@ -205,30 +207,15 @@ USE `produccion` ;
 DROP TABLE IF EXISTS `produccion`.`productos` ;
 
 CREATE TABLE IF NOT EXISTS `produccion`.`productos` (
-  `idproductos` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idproductos` INT UNSIGNED NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
   `numero_parte` INT UNSIGNED NOT NULL,
   `descripcion` TEXT NOT NULL,
   `manual` VARCHAR(45) NOT NULL,
   `archivos_digitales` VARCHAR(80) NOT NULL,
   `info_adicional` TEXT NULL,
-  `cantiadad` INT UNSIGNED NOT NULL,
+  `cantidad` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idproductos`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `produccion`.`clientes`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `produccion`.`clientes` ;
-
-CREATE TABLE IF NOT EXISTS `produccion`.`clientes` (
-  `idclientes` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(45) NOT NULL,
-  `apellido` VARCHAR(45) NOT NULL,
-  `cedula` VARCHAR(45) NOT NULL,
-  `localizacion` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idclientes`))
 ENGINE = InnoDB;
 
 
@@ -252,51 +239,82 @@ ENGINE = InnoDB;
 
 CREATE INDEX `fk_precios_1_idx` ON `produccion`.`precios` (`idproductos` ASC);
 
+USE `iot` ;
 
 -- -----------------------------------------------------
--- Table `produccion`.`ventas`
+-- Table `iot`.`cliente`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `produccion`.`ventas` ;
+DROP TABLE IF EXISTS `iot`.`cliente` ;
 
-CREATE TABLE IF NOT EXISTS `produccion`.`ventas` (
-  `idventas` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idclientes` INT UNSIGNED NOT NULL,
-  `fecha` TIMESTAMP NOT NULL,
-  PRIMARY KEY (`idventas`),
-  CONSTRAINT `fk_ventas_1`
-    FOREIGN KEY (`idclientes`)
-    REFERENCES `produccion`.`clientes` (`idclientes`)
+CREATE TABLE IF NOT EXISTS `iot`.`cliente` (
+  `idcliente` INT UNSIGNED NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `cedula` VARCHAR(45) NOT NULL,
+  `localizacion` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idcliente`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iot`.`casa`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iot`.`casa` ;
+
+CREATE TABLE IF NOT EXISTS `iot`.`casa` (
+  `idcasa` INT UNSIGNED NOT NULL,
+  `idcliente` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`idcasa`),
+  CONSTRAINT `fk_casa_1`
+    FOREIGN KEY (`idcliente`)
+    REFERENCES `iot`.`cliente` (`idcliente`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_ventas_1_idx` ON `produccion`.`ventas` (`idclientes` ASC);
+CREATE INDEX `fk_casa_1_idx` ON `iot`.`casa` (`idcliente` ASC);
 
 
 -- -----------------------------------------------------
--- Table `produccion`.`detalle_ventas`
+-- Table `iot`.`dispositivos`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `produccion`.`detalle_ventas` ;
+DROP TABLE IF EXISTS `iot`.`dispositivos` ;
 
-CREATE TABLE IF NOT EXISTS `produccion`.`detalle_ventas` (
-  `iddetalle_ventas` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idventas` INT UNSIGNED NOT NULL,
-  `cantidad` INT UNSIGNED NOT NULL,
-  `idproductos` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`iddetalle_ventas`, `idventas`),
-  CONSTRAINT `fk_detalle_ventas_1`
-    FOREIGN KEY (`idventas`)
-    REFERENCES `produccion`.`ventas` (`idventas`)
+CREATE TABLE IF NOT EXISTS `iot`.`dispositivos` (
+  `iddispositivos` INT UNSIGNED NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `descripcion` TEXT NOT NULL,
+  PRIMARY KEY (`iddispositivos`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iot`.`datos`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iot`.`datos` ;
+
+CREATE TABLE IF NOT EXISTS `iot`.`datos` (
+  `iddatos` INT UNSIGNED NOT NULL,
+  `iddispositivos` INT UNSIGNED NOT NULL,
+  `idcasa` INT UNSIGNED NOT NULL,
+  `inicio` TIMESTAMP NOT NULL,
+  `lectura` TEXT NOT NULL,
+  `fin` TIMESTAMP NULL,
+  PRIMARY KEY (`iddatos`),
+  CONSTRAINT `fk_datos_1`
+    FOREIGN KEY (`idcasa`)
+    REFERENCES `iot`.`casa` (`idcasa`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_detalle_ventas_2`
-    FOREIGN KEY (`idproductos`)
-    REFERENCES `produccion`.`productos` (`idproductos`)
+  CONSTRAINT `fk_datos_2`
+    FOREIGN KEY (`iddispositivos`)
+    REFERENCES `iot`.`dispositivos` (`iddispositivos`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_detalle_ventas_1_idx` ON `produccion`.`detalle_ventas` (`idventas` ASC);
+CREATE INDEX `fk_datos_1_idx` ON `iot`.`datos` (`idcasa` ASC);
+
+CREATE INDEX `fk_datos_2_idx` ON `iot`.`datos` (`iddispositivos` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -345,35 +363,6 @@ BEGIN
 	WHERE materiales.idmateriales = (SELECT idmateriales FROM detalle_salida ORDER BY idsalida DESC, iddetalle_salida DESC LIMIT 1);
 END
 $$
-
-
-DELIMITER ;
-USE `produccion`;
-
-DELIMITER $$
-
-USE `produccion`$$
-DROP TRIGGER IF EXISTS `produccion`.`agregar_cantidad` $$
-USE `produccion`$$
-CREATE TRIGGER `agregar_cantidad` 
-AFTER INSERT ON `productos` FOR EACH ROW 
-BEGIN	
-	UPDATE productos
-		SET productos.cantidad = productos.cantidad + 1
-		WHERE productos.idproductos = NEW.idproductos;
-END$$
-
-
-USE `produccion`$$
-DROP TRIGGER IF EXISTS `produccion`.`quitar_productos` $$
-USE `produccion`$$
-CREATE TRIGGER `quitar_productos` 
-AFTER INSERT ON `detalle_ventas` FOR EACH ROW
-BEGIN 
-	UPDATE productos
-	SET productos.cantidad = productos.cantidad - detalle_ventas.cantidad
-	WHERE detalle_ventas.iddetalle_ventas = new.iddetalle_ventas;
-END$$
 
 
 DELIMITER ;
