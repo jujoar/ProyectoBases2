@@ -105,11 +105,87 @@ Herramientas utilizadas por los estudiantes:
 
 ## Estructuras de datos usadas y funciones
 
+Para esta tarea usamos 3 bases de datos, las cuales son **bodega, producción e iot**.
+
+### Bodega
+
+En esta base de datos encontramos todo lo relacionado a la bodega e inventario de materias primas para la elaboración de dispositivos. sus principales tablas son:
+
+**Proveedores**
+
+En esta tabla tenemos todos los proveedores de los cuales compramos materiales.
+
+**Empleados**
+
+En esta tabla tenemos la lista de empleados de nuesntra empresa.
+
+**Departamento**
+
+En esta tabla tenemos la lista de departamentos a lo interno de la empresa.
+
+**Materiales**
+
+En esta tabla tenemos la lista de materiales con los cuales fabricaremos dispositivos IoT.
+
+**Ordenes_de_compra**
+
+En esta tabla simulamos una factura de compra de materiales a los proovedores.
+
+**Detalle_orden**
+
+En esta tabla tenemos el detalle de cada linea de factura de ordenes_de_compra.
+
+**Salida_de_bodega**
+
+En esta tabla simulamos una salida de la bodega de materiales para ser convertidos en dispositivos IoT.
+
+**Detalle_salida**
+
+En esta tabla tenemos el detalle de cada linea de factura de salida_de_bodega.
+
+**Devoluciones**
+
+En esta tabla tenemos materiales defectuosos los cuales son devueltos a los proveedores y cancelar la factura de dichas partes.
+
+### Producción
+
+En esta base de datos tenemos los detalles de los dispositivos que creamos para su posterior venta.
+
+**Productos**
+
+En esta tabla tenemos los dispositivos en stock para su posterior venta.
+
+**Precios**
+
+En esta tabla tenemos el historial de precios de los dispositivos IoT.
+
+###IOT
+
+En esta base de datos tenemos los datos recolectados de nuestros clientes, así como sus datos.
+
+**Clientes**
+
+Simplemente es una tabla con los datos de nuestros clientes.
+
+**Casa**
+
+Esta es una tabla que asocia un cliente con una casa.
+
+**Dispositivos**
+
+Esta tabla contiene los dispositivos que se encuentran recolectando datos para luego ser analizados.
+
+**Datos**
+
+En esta tabla tenemos los datos recolectados a travez del tiempo por los dispositivos en distintas casas.
+
+### Archivo exel
+
+En este archivo tenemos los datos de entrega de dispositivos IoT a nuestros clientes al rededor del mundo. En esta hoja de cálculo tenemos datos del cliente, el empleado encargado, el carrier y demás.
 
 ## Instrucciones para ejecutar el programa
 
 Para ejecutar la tarea se debe seguir una serie de pasos:
-
 
 ### Inicializar el Cluster
 
@@ -128,32 +204,29 @@ Se desglosan en el formato:
 
 Fecha – Cantidad Horas Invertidas - Tarea - Estudiante
 
-- `23 de Mayo al 7 de Abril - 10 horas - Diseño de las bases de datos bodega y producción. - Gustavo` 
+- `13 de Junio al 15 de Junio - 10 horas - Diseño de las bases de datos bodega y producción. - Gustavo` 
 
-- `23 de Mayo al 7 de Abril - 10 horas - Investigación sobre la biblioteca pthread - Gustavo`
+- `16 de Junio al 19 de Junio - 15 horas - Llenado de la base de datos mediante scrips de Python`.
 
-- `23 de Mayo al 7 de Abril - 10 horas - Investigación sobre la biblioteca pthread - Gustavo`
-
-- `23 de Mayo al 7 de Abril - 10 horas - Investigación sobre la biblioteca pthread - Gustavo`
-
-- `10 Mayo - 2 hora - Documentación - Gustavo y Mauricio`. 
+- `19 Junio - 2 horas - Documentación - Todos`. 
 
 ## Comentarios finales (estado del programa)
 
-La animación cumple con la mayoría de requerimientos del proyecto. Se pueden crear objetos, correr la animación y finalizarla con normalidad y sin ningún problema. Además, se puede ejecutar la animación en otros equipos gracias a la utilización de telnet y se usa pthreads, al asignarle a cada objeto un hilo. Lo que falto fue poder desarrollar los propios threads y además, validar de que una figura no sobrepase la posición de otra. Este último punto se trabajo, pero el problema fue que no se pudo mantener el estado de la estructura que contenia las posiciones ocupadas por los objeto, por la característica del lenguaje C de poder manipular objetos por referencia o por copia.
-
-Para la biblioteca myPthread se logró incorporar con éxito los algoritmos de scheduling, pero no así las funciones de pthread asociadas a la biblioteca pthread ni los mutex. No se encontró suficiente información para su implementación, pese a que si se tenía en claro como debían de funcionar estos.
+El proceso de replicación de una base de datos fue el que más se dificultó, costó varios días de trabajo y mucha investigación, finalmente se dejó al lado de las máquinas virtuales del cluster.
 
 ## Conclusiones
 
-El desarrollo de la animación ayudo a reforzar los conocimientos en el lenguaje C y otras características que este posee y que lo hacen diferencial. Lo faltante de la animación se pudo finalizar, pero por algunos inconvenientes personales y responsabilidades en otros cursos no alcanzo el tiempo.
-
-Pese a la no implementación de la biblioteca, se obtuvo un conocimiento bastante valioso de la biblioteca pthread y de los mutex para implementaciónes futuras. A la vez que se aprendió sobre scheduling a nivel de procesos y cambios de contexto.
 
 ## Bibliografía
 
-- Markdown Cheatsheet. (2016, Febrero 26). Obtenido de https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet 
+*stackoverflow.* (2015). *MySQL: Grant all privileges on database*. 17 junio 2017, de stackoverflow Sitio web: https://stackoverflow.com/questions/5016505/mysql-grant-all-privileges-on-database
 
-- SetJump para cambios de contexto. Obtenido de https://es.wikipedia.org/wiki/Setjmp.h 
+*Canonical Ltd.*. (2017). *Installing LXD and the command line tool*. 17 junio 2017, de Canonical Ltd. Sitio web: https://linuxcontainers.org/lxd/getting-started-cli/
 
-- Margaret Rouse. (2010). Round Robin. Obtenido el 26/Abril/2017, de Techtarget Sitio web: http://whatis.techtarget.com/definition/round-robin
+*Randall Araya*. (2016). *cluster-de-mysql-en-lxd*. 15 Junio 2017, de tec.siua.ac.cr Sitio web: https://tec.siua.ac.cr/documentacion/cluster-de-mysql-en-lxd
+
+*Aciddrop com.* (2017). *step-by-step-how-to-setup-mysql-database-replication*. 15 Junio 2017, de Aciddrop.com Sitio web: http://aciddrop.com/2008/01/10/step-by-step-how-to-setup-mysql-database-replication/
+
+*Sawiyati. *(2015). Master – *Slave MySQL Replication Tutorial for Newbie*. 15 Junio 2017 , de servermom Sitio web: http://www.servermom.org/master-slave-mysql-replication-tutorial/
+
+*Muhammad Arul.* (2016). *How to Install a MySQL Cluster on Ubuntu 16.04.* 15 Junio 2017 , de howtoforge Sitio web: https://www.howtoforge.com/tutorial/how-to-install-a-mysql-cluster-on-ubuntu-16-04/
