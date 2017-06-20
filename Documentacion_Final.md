@@ -2,285 +2,125 @@
 
 Estudiantes:
 
+
+
 - José Gustavo González González.
+
+- Cristopher Agüero
+
+- Juan José Salas Arguedas
 
 ## Introducción
 
 ### Objetivo
 
-Realizar una re-implementación de algunas de las funciones de la biblioteca de pthreads de C del Sistema Operativo GNU/Linux. 
+"One Ring To Rule Them all". Realizar una implementación de Inteligencia de Negocios para una empresa virtual costarricense. Incluyendo un sistema a prueba de fallos que permita aumentar el uptime del servicio.
 
 ### Requerimientos Funcionales
-#### MyPthreads
 
-Se realizará la re-implementación de la biblioteca de pthreads, llamada **mypthreads**, de las siguientes funciones: 
+Los datos que se desean analizar de los sistemas son:
 
-- `my_thread_create`
+- Costos de producción
 
-- `my_thread_end`
+- Sugerencia de consumo de productos del cliente en los próximos 15 días.
 
-- `my_thread_yield`
+- Dispositivos IoT más utilizados por el cliente
 
-- `my_thread_join`
+- Dispositivos IoT más vendidos
 
-- `my_thread_detach`
+- Tiempo de entrega de materiales relacionados a los Dispositivos IoT más vendidos
+- Malos proveedores ya sea por tiempo de respuesta o por precios muy elevados o por mala calidad de los artículos o materiales
 
-- `my_mutex_init`
+- Determinar aquellos materiales de mucha circulación y de poca circulación
 
-- `my_mutex_destroy`
+- Las ventas que realizan durante todo el año teniendo en cuenta los destinos de las mismas
 
-- `my_mutex_lock`
+- Les es importante saber cuáles son los carrier con los cuales están enviando más volumen y relativo a los destinos de los productos como es que se comportan los diferentes carriers
 
-- `my_mutex_unlock`
+- Como todo gerente le interesa mucho saber cuánto gasta versus cuánto gana
 
-- `my_mutex_trylock`
+#### Simular el estado actual del sistema de LOTR
 
-Además de las funciones por defecto de phtreads es necesario implementar los siguientes métodos:
+- Diseñe e implemente la base de datos de inventario de materiales en bodega. Rellene la base de datos con los 6000 materiales que permitan realizar unos 100 dispositivos IoT, clasificados en distintos números de serie, y modelos, entradas y salidas que completen unos 80000 movimientos realizados en los últimos 5 años no uniformemente distribuidos.
 
-- `my_thread_chsched`: Se encarga de cambiar el tipo scheduling del hilo.
+- Diseñe e implemente la base de datos de precios de productos, agregando un total de 100 productos reportando de 30 a 70 variaciones de precio por producto distribuidos en los mismos 5 años. Tenga presente que la empresa tiene que estar ganando dinero de lo contrario ya hubiera quebrado.
 
-#### Schedulers
+- Diseñe e implemente la hoja de Excel ingresando despachos para todos los productos existentes, concretando mínimo 9000 no uniformemente distribuidos en los 5 años
 
-Los schedulers se debe de establecer al momento de crear los threads. O sea, es necesario agregar un parámetro a la función `my_thread_create` que establezca el scheduler que utilizará ese hilo. Además este método debe ser compatible con una definición de pthreads estándar, o sea. Es posible compilar cualquier código que utilice phtreads, y que éste utilice la nueva biblioteca.
+- Diseñe e implemente una recolección de datos de los dispositivos IoT que represente el uso de 1 año, en la casa de habitación. Por lo que al menos deberían de tener 52560 entradas tomando en cuenta que se realiza una toma cada 10 minutos. Esta base de datos debe se ser de al menos 25 clientes.
 
-El scheduler por defecto en caso que no se especifique será RoundRobin.
+- Se revisará el diseño de las bases de datos
 
-A continuación se definen los tipos de schedulers que soportará la biblioteca. 
+#### Infraestructura
 
-##### Scheduler RoundRobin
+- Deberá usar mínimo dos servidores virtuales Windows 2008 Server y SQL Server 2008 R2 o bien MySQL Server sobre GNU/Linux. Cada servidor tendrá una base de datos y la hoja de Excel puede estar en un folder compartido de la red
 
-Se debe de realizar la implementación del scheduler siguiendo un algoritmo de RoundRobin.
+- Utilizando replication services proceda a implementar el esquema de replicación de forma que la base de datos de inventario se replique en la de productos y la de productos se replique en la de inventario. Se harán pruebas de replicación en la revisión
 
-##### Scheduler Sorteo
+- Utilizando clustering services y otros dos servidores virtuales (un pasivo y un domain controller) haga que uno de los servidores de base de datos cuente con un esquema fail over en modo cluster activo/pasivo. Se hará la prueba de que el fail over funciona.
 
-Se debe de realizar la implementación del scheduler siguiendo un algoritmo de Sorteo. Los hilos creados para este scheduler puede que necesiten parámetros extra, por ejemplo cantidad de tiquetes inciales. 
+- Opcional 10pts: Utilizando los servicios (si la implementacíon utilizó SQL Server) de mirroring y otros dos servidores virtuales (un pasivo y un witness que también funciona de domain controller) implemente una arquitectura failover con testigo. Se hará la prueba de que el failover funciona
 
-##### Scheduler de Tiempo Real
 
-Se debe de realizar la implementación del scheduler siguiendo un algoritmo de Tiempo Real. Los hilos creados para este scheduler puede que necesiten parámetros extra, por ejemplo límites de tiempo. 
 
-#### Animación
+#### Business Intelligence
 
-El sistema de animación consiste en una especie de Flash para ASCII que permite crear animaciones que corren en un canvas que estará distribuido en varios monitores.
+- Según las necesidades de los gerentes diseñe e implemente el datawarehousing necesario utilizando modelo en estrella.
 
-##### Lenguaje
+- Haga uso de integration services para hacer el ETL con el que se va a popular el datawarehousing, use las 3 fuentes de datos: Excel, base de inventario, base de productos y base de IoT.
 
-Se deberá de describir un lenguaje común que permita la descripción de cualquier tipo de animación. En este lenguaje se tendrán conceptos como:
+- Por medio de análisis services implemente el o los cubos necesarios para ser usados en la solución de BI y haga deployment de los mismos.
 
-- Restricciones de tiempo de inicio y final.
+- Demuestre que es posible ahora hacer consultas y reportes a los data marts creados utilizando reporting services y Excel
 
-- Establecer el tamaño del canvas.
-
-- Descripción de Objetos.
-
-- Límite de espacio de Objetos.
-
-- Descripción de movimiento de Objetos.
-
-##### Monitores de despliegue
-
-La aplicación permitirá correrse en distintas PCs. Cada PC aportará su monitor como mecanismo de despliegue. La comunicación entre se realizará utilizando sockets y un protocolo de comunicación definido por el estudiante.
-
-Además es importante establecer el orden de los monitores.
-
-##### Tamaño del canvas
-
-Se deberá de poder establecer el tamaño del canvas, este tamaño incluye: que sección del canvas corresponde a cual de los monitores. Estos monitores se debieron de asociar previamente a través de la aplicación. 
-
-###### Tipos
-
-Se establecerá un mecanismo para definir el tipo de objeto. El tipo de objeto está directamente relacionado con el tipo de Scheduler a utilizar en este caso se dispondrá de RoundRobin y de Sorteo. 
-
-###### Forma
-
-El lenguaje permitirá la creación de nuevas formas, basadas en ASCII art, que se animarán. Un ejemplo de una posible forma es como se muestra a continuación.
-
-<div class="highlight"><pre><span></span>            | | |x| | | 
-            | |x|x|x| | 
-            |x|x|x|x|x| 
-            | |x|x|x| | 
-            | |x|x|x| | 
-</pre></div>
-
-##### Restricciones de tiempo de inicio y final
-
-Esta descripción consiste en el momento en que el objeto entra en escena y cuando es el momento máximo para que el objeto salga de la escena. En caso que el objeto no respete el tiempo máximo de salida. Este deberá de **explotar**.
-
-##### Descripción de movimiento de Objetos
-
-Los objetos podrán moverse en cualquier dirección en el canvas, además se podrán realizar rotaciones de 0, 90, 180, 270 grados. Los movimientos consisten en una posición inicial y una posición final. Además de un ángulo inicial y un ángulo final.
-
-##### Límite de espacio de Objetos
-
-Ningún objeto puede utilizar el espacio, en el canvas, que otro objeto ya posea. Para ello se deben de implementar mutex o semáforos. En caso que el espacio se encuentre ocupado, el objeto deberá esperar hasta que el espacio esté libre.
-
-##### Creación de una animación de prueba
-
-Se debe de crear una animación de prueba que permita mostrar el funcionamiento de todos los requerimientos anteriores.
-
-#### Otras consideraciones
+##### Otras consideraciones
 
 Además de las definiciones anteriores tome en cuenta:
 
-- Todo el sistema de Animación es gobernado por el Scheduler de TiempoReal, que hace que se cumplan los límites de tiempo. Este le da más prioridad a un hilo cambiándolo temporalmente de scheduler a uno más eficiente. Por ejemplo se deberá de elegir el sorteo y darle más tiquetes al hilo.
+- Se evaluará aspectos de diseño, calidad de código, optimización de código
 
-- Todos los animadores corren en modo listening.
+- Deberá seguir las pautas de calidad de código y el estándar de código adjunto a este enunciado
 
-- La arquitectura de la federación de monitores es distribuida formando un grafo. Este grafo puede ser: una lista enlazada, en forma de estrella o cualquier otra forma.
+- Las revisiones preliminares pueden ser por correo o presenciales
 
-#### Extra
-
-Establecer un lenguaje común donde dos proyectos funcionen como si fuera uno. O sea que sea posible la federación de dos proyectos diferentes. 
+- Cualquier otra propuesta hecha por el estudiante debe de consultarla con el profesor.
 
 ## Ambiente de desarrollo
 
-El presente proyecto se realizará sobre GNU/Linux usando el compilador de *GCC* para código en lenguaje *C*.
+Herramientas utilizadas por los estudiantes:
+
+- Python
+
+- MySQL-Cluster
+
+- LXD
+
+	- De la mano con el sistema operativo Ubuntu 16:04
+
+- Pentaho
+
+- Spoon
+
+- Workbench
 
 ## Estructuras de datos usadas y funciones
 
-El proyecto consta de 2 partes claramente definidas, la biblioteca myPthread y el programa de la animación.
-
-### Biblioteca myPthread
-
-Para esta biblioteca se implemtó lo siguiente.
-
-#### timer.h
-
-Esto controla el timer y manda un signal de *Alert*, esto para ser utilizado en los cambios de contexto más adelante. Entre sus funciones encontramos:
-
-##### setTimer
-
-Función que inicializa el timer.
-
-##### getTimer
-
-Funcion que retorna el tiempo transcurrido y para la alarma.
-
-##### stopTimer
-
-Funcion que detiene el timer.
-
-#### simpleThread.h
-
-Es una estructura de datos que contiene los atributos principales de los threads que se van a crear. Estos atributos son:
-
-- thread_id: ID del thread.
-
-- thread_state: estado del thread (DONE, READY, BLOCKED).
-
-- stack: tamaño del hilo.
-
-- thread_function: funcion que recibe el hilo.
-
-- arguments: argumentos de esa funcion.
-
-- environment: para almacenar el contexto del hilo.
-
- - joined_to: Hilo que esta esperando a que termine.
- 
- - joined_thread: El hilo que está esperando a que este termine.
- 
-#### lotto.h
-
-En este header se genera un random probabilistico donde se le asigna más probabilidad a un proceso con más tiquetes. Entre sus funciones encontramos:
-
-### ganador
-
-Funcion encargada de generar el random probabilistico.
-
-#### [scheduling]_list.h
-
-Es la lista que contiene la estructura principal para almacenar el algoritmo de scheduling.
-
-#### round_robin.h
-
-Para el *rr* (*round robin*), utilizamos una lista enlazada circular, donde el *head* es el proceso que se encuentra en ejecución. Para ceder el procesador, el siguiente proceso que toma este recurso sería el siguiente de la lista.
-
-#### sorteo.h
-
-Para sorteo, se asignan tiquetes a cada proceso al ingresar en la lista enlazada, y el siguiente proceso sería tomado al azar, usando un random probabilístico. De esta manera nos aseguramos que apenas acabe el quantum, un nuevo proceso entra.
-
-### Animación
-
-####administrarObjetos.h
-Tiene una serie de metodos para agregar figuras al archivo de objetos, eliminar figuras, ver objetos almacenados, ver el movimiento del objeto con una rotación y visualizar la figura.
-
-####conexionesPC.h
-Tiene las funciones para iniciar el servidor, asociar los monitores, extraer la información de los objetos y ejecutar la animación.
-
-####funcionesExtra.h
-Tiene funciones que se necesitaban en varios archivos, entonces para no repetir código, se agrego en este archivo.
-
-####main
-Archivo principal que toma los parámetros de entrada y llama a las funciones adecuadas.
-
-####matrizCanvas.h
-Tiene las funciones desarrolladas para validar que las figuras no choquen con otras en el canvas. El código funciona, pero hay una serie de errores que no permitieron su funcionamiento esperado.
-
-####monitor.h
-Administra todas las funciones referentes a los monitores.
-
-####objeto.h 
-Tiene las funciones principales para desplezar el objeto en el canvas y cargar los datos necesarios.
-
-###Diseño Animación
-El siguiente contenido explica algunos puntos referentes al diseño de la animación:
-
-#####MONITOR
-El id debe iniciar con 1.
-Los monitores deben estar ordenados por su id (menor a mayor).
-El valor posXIni representa el punto "x" donde iniciará el monitor y el posYIni el "y" donde iniciará el monitor.
-
-Estructura
-monitor,nombre,largo,ancho,posXIni,posYIni,id
-
-Ejemplo
-monitor,m1,150,30,0,0,1
-
-#####OBJETO
-Hay 2 tipos de descripción:
-
-1. Round Robbin
-El tipoObjeto es el nombre del objeto que ya está almacenado en el archivo objetos.txt.
-Para este sckedudeler se manejara una numeración de 0 en su espacio.
-La rotación puede ser 0,90,180,270 y 117 (rotación aleatoria).
-El tiempo de Ejecución y Salida está asociado al scheduler en tiempo real.
-
-Estructura
-objeto,tipoObjeto,scheduler,posIniX,posIniY,posFinX,posFinY,rotacion,tiempoEjecucion
-
-Ejemplo
-objeto,flecha,0,130,15,250,15,180,30
-
-2. Sorteo
-El tipoObjeto es el nombre del objeto que ya está almacenado en el archivo objetos.txt.
-Para este sckedudeler se manejara una numeración de 1 en su espacio.
-El parámetro cantidadTiquetes se asocia al número inicial de tiquetes que se le otorgará al objeto.
-La rotación puede ser 0,90,180,270 y 117 (rotación aleatoria).
-El tiempo de Ejecución está asociado al scheduler en tiempo real.
-
-Estructura
-objeto,tipoObjeto,scheduler,cantidadTiquetes,posIniX,posIniY,posFinX,posFinY,rotacion,tiempoEjecucionn
-
-Ejemplo
-objeto,fle,1,2,250,25,100,25,90,10,30 
 
 ## Instrucciones para ejecutar el programa
-Para compilar el proyecto se utilizo netbeans, con el modulo para el lenguaje C/C++. Nada más hay que agregar en la configuración del compilador gcc -pthread o si desea compilar la animación desde la terminal debe poner el siguiente comando en el directorio principal:
-#####gcc -pthread *
 
-Si desea ejecutar de una vez la animación, ingresa a la siguiente ruta del proyecto /dist/Debug/GNU-Linux y agregar el comando:
-#####./animacion -e data/animacion.txt
+Para ejecutar la tarea se debe seguir una serie de pasos:
 
-Es importante que en ese directorio, este el archivo objetos.txt que tendrá la forma de las figuras que se asocian en la animación. Además, se puede administrar las figuras de los objetos ingresando el comando:
 
-#####./animacion -c
+### Inicializar el Cluster
 
-Para asociar los monitores, se debe agregar el comando:
+Para hacer esto, brindamos toda una documentación acerca del cluster y cómo realizarlo.
 
-#####telnet ip 8080
+### Montar las bases de datos SQL.
 
-La ip corresponde a la máquina donde se ejecuta la animación, y debe estar en la misma red las computadoras. Debe asociar los monitores, según la prioridad que agregó en el archivo de la animación.
+En este punto se deben montar las bases de datos en el cluster, para esto, se ejecuta en algún cliente del cluster el script provisto en la carpeta de la tarea.
+
+##### Business Intelligence
+
  
 ## Actividades realizadas por estudiante
 
@@ -288,17 +128,13 @@ Se desglosan en el formato:
 
 Fecha – Cantidad Horas Invertidas - Tarea - Estudiante
 
-- `15 al 25 de Abril - 10 horas - Investigación sobre la biblioteca pthread- Gustavo`. 
+- `23 de Mayo al 7 de Abril - 10 horas - Diseño de las bases de datos bodega y producción. - Gustavo` 
 
-- `15 al 25 de Abril - 8 horas - Investigación sobre la biblioteca pthread- Mauricio`. 
+- `23 de Mayo al 7 de Abril - 10 horas - Investigación sobre la biblioteca pthread - Gustavo`
 
-- `15 al 25 de Abril - 80 horas - Crear la animación y corregir problemas- Mauricio`.
+- `23 de Mayo al 7 de Abril - 10 horas - Investigación sobre la biblioteca pthread - Gustavo`
 
-- `15 al 25 de Abril - 10 horas - Algoritmo scheduler tiempo real- Mauricio`.  
-
-- `15 al 25 de Abril - 4 horas - Investigación sobre telnet- Mauricio`. 
-
-- `26 al 30 de Abril - 15 horas - Creación de las bases (schedulers) de la biblioteca myPthread exeptuando tiempo real - Gustavo`. 
+- `23 de Mayo al 7 de Abril - 10 horas - Investigación sobre la biblioteca pthread - Gustavo`
 
 - `10 Mayo - 2 hora - Documentación - Gustavo y Mauricio`. 
 
