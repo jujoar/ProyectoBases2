@@ -297,24 +297,24 @@ CREATE TABLE IF NOT EXISTS `iot`.`datos` (
   `iddispositivos` INT UNSIGNED NOT NULL,
   `idcasa` INT UNSIGNED NOT NULL,
   `inicio` TIMESTAMP NOT NULL,
-  `lectura` TEXT NOT NULL,
   `fin` TIMESTAMP NULL,
+  `lectura` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`iddatos`),
   CONSTRAINT `fk_datos_1`
-    FOREIGN KEY (`idcasa`)
-    REFERENCES `iot`.`casa` (`idcasa`)
+    FOREIGN KEY (`iddispositivos`)
+    REFERENCES `iot`.`dispositivos` (`iddispositivos`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_datos_2`
-    FOREIGN KEY (`iddispositivos`)
-    REFERENCES `iot`.`dispositivos` (`iddispositivos`)
+    FOREIGN KEY (`idcasa`)
+    REFERENCES `iot`.`casa` (`idcasa`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_datos_1_idx` ON `iot`.`datos` (`idcasa` ASC);
+CREATE INDEX `fk_datos_1_idx` ON `iot`.`datos` (`iddispositivos` ASC);
 
-CREATE INDEX `fk_datos_2_idx` ON `iot`.`datos` (`iddispositivos` ASC);
+CREATE INDEX `fk_datos_2_idx` ON `iot`.`datos` (`idcasa` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
